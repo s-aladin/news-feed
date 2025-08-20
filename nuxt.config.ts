@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt'
   ],
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/reset.css', '~/assets/css/main.css'],
   app: {
     head: {
       title: 'News App',
@@ -16,6 +16,14 @@ export default defineNuxtConfig({
   typescript: {
     typeCheck: true,
     strict: true
+  },
+  runtimeConfig: {
+    public: {
+      rssFeeds: {
+        mos: 'https://www.mos.ru/rss',
+        lenta: 'https://www.lenta.ru/rss/news'
+      }
+    }
   },
 
   compatibilityDate: '2025-07-15',

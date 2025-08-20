@@ -30,6 +30,7 @@
   height: 40px;
   margin-left: 30px;
   background-color: #FFFFFF;
+  border: none;
   border-radius: 30px;
   display: flex;
   align-items: center;

@@ -41,6 +41,7 @@
   .layout_button {
     background-color: inherit;
     padding: 0;
+    border: none;
   }
 
   .filter_button_text {
