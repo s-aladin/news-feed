@@ -3,6 +3,9 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt'
   ],
+  imports: {
+    dirs: ['stores']
+  },
   css: ['~/assets/css/reset.css', '~/assets/css/main.css'],
   app: {
     head: {
@@ -21,7 +24,7 @@ export default defineNuxtConfig({
     public: {
       rssFeeds: {
         mos: 'https://www.mos.ru/rss',
-        lenta: 'https://www.lenta.ru/rss/news'
+        interfax: 'https://www.interfax.ru/rss.asp'
       }
     }
   },

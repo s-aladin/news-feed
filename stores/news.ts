@@ -1,35 +1,44 @@
 import { defineStore } from 'pinia'
-import type { NewsItem, NewsState } from '~/types/news'
-import { parseRSSFeed } from '~/utils/rssParser'
+import type { NewsItem } from '~/types/news'
+
+interface NewsState {
+    items: NewsItem[]
+    loading: boolean
+    error: string | null
+    activeSources: string[]
+}
 
 export const useNewsStore = defineStore('news', {
     state: (): NewsState => ({
         items: [],
-        totalItems: 0,
+        loading: false,
+        error: null,
+        activeSources: ['mos.ru', 'interfax.ru'],
     }),
+
+    getters: {
+        filteredItems: (state): NewsItem[] => {
+            return state.items.filter(item =>
+                state.activeSources.includes(item.source)
+            )
+        },
+    },
 
     actions: {
         async fetchNews() {
-            const config = useRuntimeConfig()
-            const feeds = [
-                { source: 'mos', url: config.public.rssFeeds.mos },
-                { source: 'lenta', url: config.public.rssFeeds.lenta }
-            ]
+            this.loading = true
+            this.error = null
 
-            const allNews: NewsItem[] = []
-
-            for (const feed of feeds) {
-                const items = await parseRSSFeed(feed.url, feed.source)
-                allNews.push(...items)
+            try {
+                const response = await $fetch<{ items: NewsItem[] }>('/api/news')
+                this.items = response.items.sort((a, b) =>
+                    new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
+                )
+            } catch (err: any) {
+                this.error = err.message || 'Ошибка загрузки новостей'
+            } finally {
+                this.loading = false
             }
-
-            this.items = allNews.sort((a, b) =>
-                new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
-            )
-            this.totalItems = this.items.length
-        }
-    },
-    getters: {
-
+        },
     }
 })

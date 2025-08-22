@@ -70,3 +70,29 @@ button {
 .active {
     color: #0029FF;
 }
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 18px;
+}
+
+.error {
+    padding: 20px;
+    background: #ffebee;
+    color: #d32f2f;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.no-news {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-style: italic;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border: 1px dashed #ddd;
+}

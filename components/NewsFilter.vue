@@ -1,11 +1,13 @@
 <template>
   <div class="filter">
     <div class="filter__buttons">
-      <span class="filter_button_text">Все</span>
-      <button class="filter_button active">
-        <span class="filter_button_text">Lenta.ru</span>
+      <button class="filter_button">
+        <span class="filter_button_text">Все</span>
       </button>
-      <button class="filter_button active">
+      <button class="filter_button">
+        <span class="filter_button_text">Interfax.ru</span>
+      </button>
+      <button class="filter_button">
         <span class="filter_button_text">Mos.ru</span>
       </button>
     </div>

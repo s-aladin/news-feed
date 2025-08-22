@@ -2,6 +2,7 @@
   <div class="container">
     <NewsHeader/>
     <NewsFilter/>
+    <NewsFeed/>
   </div>
 </template>
 
