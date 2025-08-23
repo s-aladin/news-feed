@@ -1,12 +1,6 @@
 import { defineEventHandler } from 'h3'
 import { parseStringPromise } from 'xml2js'
-import type { RssApiResponse } from '~/types/news'
-
-interface RssEnclosure {
-    url: string
-    type: string
-    length?: string
-}
+import type { RssApiResponse, RssEnclosure } from '~/types/news'
 
 interface RssItem {
     title: string

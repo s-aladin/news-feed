@@ -6,6 +6,12 @@ export interface EnclosureAttribute {
     }
 }
 
+export interface RssEnclosure {
+    url: string
+    type: string
+    length?: string
+}
+
 export interface MediaContent {
     $: {
         url: string
@@ -21,7 +27,7 @@ export interface RssItem {
     description: string
     pubDate: string
     enclosure?: EnclosureAttribute | EnclosureAttribute[]
-    'media:content'?: MediaContent | MediaContent[] // Добавляем сюда
+    'media:content'?: MediaContent | MediaContent[]
 }
 
 export interface ValidRssItem {
@@ -75,4 +81,11 @@ export interface NewsResponse {
         'mos.ru': number
         'interfax.ru': number
     }
+}
+
+export interface NewsState {
+    items: NewsItem[]
+    loading: boolean
+    error: string | null
+    activeSources: string[]
 }

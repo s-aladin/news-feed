@@ -8,8 +8,15 @@
       Ошибка загрузки: {{ newsStore.error }}
     </div>
 
-    <div v-if="newsStore.filteredItems.length > 0" class="news__list">
-      <div v-for="item in newsStore.filteredItems" :key="item.link + item.source" class="news__item">
+    <div
+        v-if="newsStore.filteredItems.length > 0"
+        :class="['news__list', layoutStore.layout]"
+    >
+      <div
+          v-for="item in newsStore.filteredItems"
+          :key="item.link + item.source"
+          :class="['news__item', layoutStore.layout]"
+      >
         <div class="item__content">
           <img
               v-if="item.image"
@@ -24,14 +31,18 @@
                 {{ item.title }}
               </a>
             </h3>
-            <div class="text_wrapper">
               <p
                   class="item_text text"
                   v-html="formatText(item.description)"
-
               ></p>
-            </div>
           </div>
+          <a
+              class="link link-blue"
+              :href="item.link"
+              target="_blank"
+              rel="noopener noreferrer"
+          >
+            Подробнее</a>
         </div>
         <div class="item__footer">
           <div class="item_source link link-gray">{{ item.source }}</div>
@@ -48,6 +59,7 @@
 
 <script setup lang="ts">
 const newsStore = useNewsStore()
+const layoutStore = useLayoutStore()
 
 const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
@@ -64,6 +76,7 @@ const formatText = (text: string) => {
 }
 
 onMounted(() => {
+  layoutStore.loadLayoutFromStorage()
   if (newsStore.items.length === 0) {
     newsStore.fetchNews()
   }
@@ -71,55 +84,92 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.news__list.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
 .news__item {
-  max-width: 1060px;
-  max-height: 189px;
   width: 100%;
   height: 100%;
-  margin-bottom: 20px;
   background-color: #FFFFFF;
+  border-radius: 3px;
+  box-shadow: 0 1px 10px 0 #0000000D;
+}
+
+.news__item:hover {
   box-shadow: 0 2px 10px 0 #0000000D;
+}
+
+.news__item.list {
+  max-width: 1060px;
+  max-height: 189px;
+  margin-bottom: 20px;
+}
+
+.news__item.grid {
+  max-width: 520px;
+  max-height: 256px;
 }
 
 .item__content {
   max-height: 100%;
   display: flex;
+}
+
+.news__item.list .item__content {
   gap: 30px;
   padding: 30px;
 }
 
-.item__description {
-  max-width: 772px;
-  display: flex;
+.news__item.grid .item__content {
+  padding: 30px 30px 0 30px;
   flex-direction: column;
   gap: 20px;
-  text-overflow: ellipsis;
 }
 
-.item_image {
+.item__description {
+  display: flex;
+  flex-direction: column;
+}
+
+.news__item.list .item__description {
+  max-width: 772px;
+  gap: 20px;
+}
+
+.news__item.grid .item__description {
+  max-width: 520px;
+  height: 120px;
+  justify-content: space-between;
+}
+
+.news__item.list .item_image {
   max-width: 200px;
   max-height: 100px;
   width: 100%;
 }
 
-.text_wrapper {
-  max-width: 772px;
-  max-height: 40px;
-  text-overflow: ellipsis;
+.news__item.grid .item_image {
+  display: none;
 }
 
-.item_text {
-  display: inline-block;
-  max-width: 772px;
-  max-height: 40px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.news__item.list .link-blue {
+  display: none;
 }
 
 .item__footer {
   display: flex;
   justify-content: space-between;
+}
+
+.news__item.list .item__footer {
   padding: 0 30px;
   background-color: #FCFCFC;
+}
+
+.news__item.grid .item__footer {
+  padding: 16px 30px;
 }
 </style>

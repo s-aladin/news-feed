@@ -1,12 +1,5 @@
 import { defineStore } from 'pinia'
-import type { NewsItem } from '~/types/news'
-
-interface NewsState {
-    items: NewsItem[]
-    loading: boolean
-    error: string | null
-    activeSources: string[]
-}
+import type { NewsItem, NewsState } from '~/types/news'
 
 export const useNewsStore = defineStore('news', {
     state: (): NewsState => ({
@@ -38,6 +31,15 @@ export const useNewsStore = defineStore('news', {
                 this.error = err.message || 'Ошибка загрузки новостей'
             } finally {
                 this.loading = false
+            }
+        },
+        toggleSource(source: string) {
+            if (this.activeSources.includes(source)) {
+                if (this.activeSources.length > 1) {
+                    this.activeSources = this.activeSources.filter(s => s !== source)
+                }
+            } else {
+                this.activeSources.push(source)
             }
         },
     }
