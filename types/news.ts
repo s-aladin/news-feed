@@ -30,6 +30,14 @@ export interface RssItem {
     'media:content'?: MediaContent | MediaContent[]
 }
 
+export interface InterfaxRssItem {
+    title: string
+    link: string
+    description: string
+    pubDate: string
+    enclosure?: RssEnclosure
+}
+
 export interface ValidRssItem {
     title: string
     link: string
@@ -44,12 +52,24 @@ export interface RssChannel {
     item: RssItem | RssItem[]
 }
 
+export interface InterfaxRssChannel {
+    title: string
+    description: string
+    item?: InterfaxRssItem | InterfaxRssItem[]
+}
+
 export interface Rss {
     channel: RssChannel
 }
 
 export interface RssResult {
     rss: Rss
+}
+
+export interface InterfaxRssResult {
+    rss: {
+        channel: InterfaxRssChannel
+    }
 }
 
 export interface RssApiResponse {

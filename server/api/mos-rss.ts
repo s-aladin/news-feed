@@ -1,6 +1,7 @@
 import { defineEventHandler } from 'h3'
 import { parseStringPromise } from 'xml2js'
 import type { RssResult, RssApiResponse, RssItem } from '~/types/news'
+import { extractImageFromItem, isValidRssItem } from "~/utils/rssUtils";
 
 export default defineEventHandler(async (event): Promise<RssApiResponse> => {
     const config = useRuntimeConfig()
@@ -61,34 +62,3 @@ export default defineEventHandler(async (event): Promise<RssApiResponse> => {
         }
     }
 })
-
-function extractImageFromItem(item: any): string {
-    if (item.enclosure && Array.isArray(item.enclosure) && item.enclosure.length > 0 && item.enclosure[0].$) {
-        return item.enclosure[0].$.url
-    }
-
-    const imageFromDescription = extractImageFromHtml(item.description)
-    if (imageFromDescription) {
-        return imageFromDescription
-    }
-
-    return ''
-}
-
-function extractImageFromHtml(html: string): string | undefined {
-    if (!html) return undefined
-
-    const imgRegex = /<img[^>]+src="([^">]+)"/i
-    const match = html.match(imgRegex)
-    return match ? match[1] : undefined
-}
-
-function isValidRssItem(item: any): item is RssItem {
-    return (
-        item &&
-        typeof item.title === 'string' && item.title.trim() !== '' &&
-        typeof item.link === 'string' && item.link.trim() !== '' &&
-        typeof item.description === 'string' && item.description.trim() !== '' &&
-        typeof item.pubDate === 'string' && item.pubDate.trim() !== ''
-    )
-}

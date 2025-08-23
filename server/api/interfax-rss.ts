@@ -1,27 +1,7 @@
 import { defineEventHandler } from 'h3'
 import { parseStringPromise } from 'xml2js'
-import type { RssApiResponse, RssEnclosure } from '~/types/news'
-
-interface RssItem {
-    title: string
-    link: string
-    description: string
-    pubDate: string
-    enclosure?: RssEnclosure
-    category?: string | string[]
-}
-
-interface RssChannel {
-    title: string
-    description: string
-    item?: RssItem | RssItem[]
-}
-
-interface RssResult {
-    rss: {
-        channel: RssChannel
-    }
-}
+import type { RssApiResponse, InterfaxRssItem, InterfaxRssResult } from '~/types/news'
+import { extractImageFromItem, isValidRssItem} from "~/utils/rssUtils";
 
 export default defineEventHandler(async (event): Promise<RssApiResponse> => {
     const config = useRuntimeConfig()
@@ -36,7 +16,7 @@ export default defineEventHandler(async (event): Promise<RssApiResponse> => {
 
         const cleanedXml = xmlData.trim().replace(/^\uFEFF/, '').replace(/[\x00-\x1F\x7F]/g, '')
 
-        const result: RssResult = await parseStringPromise(cleanedXml, {
+        const result: InterfaxRssResult = await parseStringPromise(cleanedXml, {
             explicitArray: false,
             trim: true,
             ignoreAttrs: false,
@@ -48,7 +28,7 @@ export default defineEventHandler(async (event): Promise<RssApiResponse> => {
             throw new Error('Channel not found in RSS')
         }
 
-        let items: RssItem[] = []
+        let items: InterfaxRssItem[] = []
         if (channel.item) {
             items = Array.isArray(channel.item) ? channel.item : [channel.item]
         }
@@ -98,51 +78,3 @@ export default defineEventHandler(async (event): Promise<RssApiResponse> => {
         }
     }
 })
-
-function extractImageFromItem(item: RssItem): string {
-    try {
-        if (item.description) {
-            const imageFromDescription = extractImageFromHtml(item.description)
-            if (imageFromDescription) {
-                return imageFromDescription
-            }
-        }
-
-        if (item.enclosure?.url && item.enclosure.type?.includes('image')) {
-            return item.enclosure.url
-        }
-
-        return ''
-    } catch (error) {
-        console.error('Error extracting image from Interfax item:', error)
-        return ''
-    }
-}
-
-function extractImageFromHtml(html: string): string {
-    if (!html) return ''
-
-    try {
-        const imgRegex = /<img[^>]+src="([^">]+)"/gi
-        const matches = []
-        let match
-
-        while ((match = imgRegex.exec(html)) !== null) {
-            matches.push(match[1])
-        }
-
-        return matches.length > 0 ? matches[0] : ''
-    } catch {
-        return ''
-    }
-}
-
-function isValidRssItem(item: RssItem): boolean {
-    return (
-        item &&
-        typeof item.title === 'string' && item.title.trim() !== '' &&
-        typeof item.link === 'string' && item.link.trim() !== '' &&
-        typeof item.description === 'string' && item.description.trim() !== '' &&
-        (typeof item.pubDate === 'string' || typeof item.pubDate === 'string')
-    )
-}
