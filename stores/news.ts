@@ -11,8 +11,21 @@ export const useNewsStore = defineStore('news', {
 
     getters: {
         filteredItems: (state): NewsItem[] => {
-            return state.items.filter(item =>
-                state.activeSources.includes(item.source)
+            const route = useRoute()
+            const searchQuery = (route.query.search as string)?.toLowerCase() || ''
+
+            return state.items.filter(item => {
+                const sourceMatch = state.activeSources.includes(item.source)
+
+                let searchMatch = true
+                if (searchQuery) {
+                    searchMatch = item.title.toLowerCase().includes(searchQuery) ||
+                        item.description.toLowerCase().includes(searchQuery)
+                }
+
+                return sourceMatch && searchMatch
+            }).sort((a, b) =>
+                new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
             )
         },
     },
@@ -24,9 +37,7 @@ export const useNewsStore = defineStore('news', {
 
             try {
                 const response = await $fetch<{ items: NewsItem[] }>('/api/news')
-                this.items = response.items.sort((a, b) =>
-                    new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
-                )
+                this.items = response.items
             } catch (err: any) {
                 this.error = err.message || 'Ошибка загрузки новостей'
             } finally {

@@ -45,7 +45,11 @@
             Подробнее</a>
         </div>
         <div class="item__footer">
-          <div class="item_source link link-gray">{{ item.source }}</div>
+          <a
+              :href="goToSourceHomePage(item.source)"
+              class="item_source link link-gray"
+              target="_blank"
+          >{{ item.source }}</a>
           <p class="item_date date">{{ formatDate(item.pubDate) }}</p>
         </div>
       </div>
@@ -73,6 +77,10 @@ const formatText = (text: string) => {
   const sliced = text.slice(0, 120);
 
   return sliced.slice(0, sliced.lastIndexOf('.') + 1) || sliced.slice(0, sliced.lastIndexOf(' ')) + '...'
+}
+
+const goToSourceHomePage = (source: string) => {
+  return source === 'mos.ru' ? 'https://mos.ru' : 'https://interfax.ru'
 }
 
 onMounted(() => {

@@ -2,19 +2,65 @@
     <header class="header">
       <div class="header__title_container">
         <h1 class="title header__title">Список новостей</h1>
-        <button class="header__button">
+        <button
+            @click="refreshNewsAndResetFilters"
+            class="header__button"
+            :disabled="newsStore.loading"
+        >
           <img src="~/assets/images/refresh.svg" alt="Обновить">
         </button>
       </div>
       <div class="search_container">
-        <input type="text" class="search_input">
+        <input
+            type="text"
+            class="search_input"
+            v-model="searchQuery"
+            @input="handleSearchInput"
+        >
         <img src="~/assets/images/search.svg" alt="Поиск" class="search_icon">
       </div>
     </header>
 </template>
 
 <script setup lang="ts">
+const newsStore = useNewsStore()
+const route = useRoute()
+const router = useRouter()
 
+const searchQuery = ref(route.query.search?.toString() || '')
+
+let searchTimeout: NodeJS.Timeout
+const handleSearchInput = () => {
+  clearTimeout(searchTimeout)
+  searchTimeout = setTimeout(updateSearchQuery, 500)
+}
+
+const updateSearchQuery = () => {
+  const query = { ...route.query }
+
+  if (searchQuery.value.trim()) {
+    query.search = searchQuery.value.trim()
+  } else {
+    delete query.search
+  }
+
+  delete query.page
+
+  router.replace({ query })
+}
+
+const refreshNewsAndResetFilters = () => {
+  newsStore.fetchNews()
+  searchQuery.value = ''
+
+  newsStore.activeSources = ['mos.ru', 'interfax.ru']
+
+  router.replace({ query: {} })
+}
+
+watch(() => route.query.search, (newSearch) => {
+  searchQuery.value = newSearch?.toString() || ''
+})
 </script>
 
 <style scoped>
