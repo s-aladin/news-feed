@@ -121,4 +121,25 @@ watch(() => route.query.search, (newSearch) => {
   height: 20px;
   pointer-events: none;
 }
+
+@media (max-width: 770px) {
+  .header {
+    flex-wrap: wrap;
+    gap: 23px;
+  }
+
+  .header__title_container {
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header__title {
+    font-size: 24px;
+  }
+
+  .search_container {
+    width: 100%;
+  }
+}
 </style>

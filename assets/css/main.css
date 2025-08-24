@@ -96,3 +96,20 @@ button {
     border-radius: 8px;
     border: 1px dashed #ddd;
 }
+
+@media (max-width: 1100px) {
+    .container {
+        margin: 0 50px;
+    }
+}
+
+@media (max-width: 550px) {
+    .container {
+        margin: 0 20px;
+    }
+
+    .title {
+        font-size: 18px;
+        line-height: 22px;
+    }
+}

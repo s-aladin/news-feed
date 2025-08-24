@@ -56,6 +56,7 @@ const toggleSource = (source: string) => {
 
 const setAllSourcesActive = () => {
   newsStore.activeSources = ['mos.ru', 'interfax.ru']
+  newsStore.updateUrlWithFilters()
 }
 
 const setLayout = (layout: 'list' | 'grid') => {

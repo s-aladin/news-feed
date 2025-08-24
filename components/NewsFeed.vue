@@ -118,6 +118,12 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.news__list.list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .news__list.grid {
   display: flex;
   flex-wrap: wrap;
@@ -139,7 +145,6 @@ onMounted(() => {
 .news__item.list {
   max-width: 1060px;
   max-height: 189px;
-  margin-bottom: 20px;
 }
 
 .news__item.grid {
@@ -205,5 +210,62 @@ onMounted(() => {
 
 .news__item.grid .item__footer {
   padding: 16px 30px;
+}
+
+@media (max-width: 770px) {
+  .news__item.list {
+    max-height: 500px;
+  }
+
+  .news__item.grid {
+    max-height: 300px;
+  }
+
+  .news__item.grid .item__description {
+    max-width: 520px;
+    height: max-content;
+    max-height: 200px;
+    justify-content: space-between;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 550px) {
+  .news__item.list .item__content {
+    max-height: 480px;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px 22px;
+  }
+
+  .news__item.grid .item__content {
+    padding: 30px 20px 15px 20px;
+  }
+
+  .news__item.list .item_image {
+    max-width: 400px;
+    max-height: 200px;
+  }
+
+  .news__item.list .link-blue {
+    display: block;
+  }
+
+  .news__item.list .item__footer {
+    padding: 5px 20px;
+  }
+
+  .news__item.grid .item__footer {
+    padding: 5px 20px;
+    background-color: #FCFCFC;
+  }
+}
+
+@media (max-width: 425px) {
+  .news__item.list .item_image {
+    max-width: 338px;
+    max-height: 166px;
+  }
+
 }
 </style>
