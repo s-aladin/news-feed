@@ -41,6 +41,33 @@ export const useNewsStore = defineStore('news', {
             } else {
                 this.activeSources.push(source)
             }
+            this.updateUrlWithFilters()
         },
+        updateUrlWithFilters() {
+            const route = useRoute()
+            const router = useRouter()
+
+            const query: any = { ...route.query }
+
+            if (this.activeSources.length === 2) {
+                delete query.sources
+            } else {
+                query.sources = this.activeSources.join(',')
+            }
+
+            delete query.page
+
+            router.replace({ query })
+        },
+        loadSourcesFromQuery() {
+            const route = useRoute()
+            const sourcesParam = route.query.sources as string
+
+            if (sourcesParam) {
+                this.activeSources = sourcesParam.split(',')
+            } else {
+                this.activeSources = ['mos.ru', 'interfax.ru']
+            }
+        }
     }
 })
