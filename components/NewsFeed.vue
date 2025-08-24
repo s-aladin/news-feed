@@ -13,7 +13,7 @@
         :class="['news__list', layoutStore.layout]"
     >
       <div
-          v-for="item in newsStore.filteredItems"
+          v-for="item in paginatedItems"
           :key="item.link + item.source"
           :class="['news__item', layoutStore.layout]"
       >
@@ -58,12 +58,38 @@
     <div v-else-if="!newsStore.loading && !newsStore.error" class="no-news">
       Нет новостей для отображения
     </div>
+    <Pagination
+        v-if="newsStore.filteredItems.length > 0"
+        :current-page="currentPage"
+        :total-items="newsStore.filteredItems.length"
+        :items-per-page="itemsPerPage"
+        @page-change="handlePageChange"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 const newsStore = useNewsStore()
 const layoutStore = useLayoutStore()
+const route = useRoute()
+const router = useRouter()
+
+const itemsPerPage = 4
+const currentPage = computed(() => {
+  const page = parseInt(route.query.page as string) || 1
+  return Math.max(1, page)
+})
+
+const paginatedItems = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return newsStore.filteredItems.slice(start, end)
+})
+
+const handlePageChange = (page: number) => {
+  const query = { ...route.query, page }
+  router.replace({ query })
+}
 
 const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
